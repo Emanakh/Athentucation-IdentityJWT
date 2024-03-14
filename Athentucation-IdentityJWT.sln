@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34330.188
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Athentucation-IdentityJWT", "Athentucation-IdentityJWT\Athentucation-IdentityJWT.csproj", "{AFF529EA-A88A-4B9B-A152-24C5CDD10101}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AFF529EA-A88A-4B9B-A152-24C5CDD10101}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AFF529EA-A88A-4B9B-A152-24C5CDD10101}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AFF529EA-A88A-4B9B-A152-24C5CDD10101}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AFF529EA-A88A-4B9B-A152-24C5CDD10101}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4CA501B6-3135-44C3-A520-6BA53579B4BC}
+	EndGlobalSection
+EndGlobal
