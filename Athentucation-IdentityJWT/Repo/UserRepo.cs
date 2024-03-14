@@ -32,10 +32,16 @@ namespace Athentucation_IdentityJWT.Repo
 		//generate token
 		public async Task<LoginResDTO> Login(LoginReqDTO loginReqDTO)
 		{
-			var user = _db.LocalUsers.FirstOrDefault(u => u.UserName.ToLower() == loginReqDTO.UserName.ToLower());
+			var user = _db.LocalUsers.FirstOrDefault(u => u.UserName.ToLower() == loginReqDTO.UserName.ToLower() && u.Password == loginReqDTO.Password);
 			if (user == null)
 			{
-				return null;
+				//return null;
+				return new LoginResDTO()
+				{
+					Token = "",
+					User = null
+
+				};
 			}
 			//if found generate token... 
 
