@@ -1,5 +1,6 @@
 ﻿using Athentucation_IdentityJWT.Models;
 using Athentucation_IdentityJWT.Models.DTOs;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Athentucation_IdentityJWT.Repo
 {
@@ -8,7 +9,7 @@ namespace Athentucation_IdentityJWT.Repo
 		bool IsUniqueUser(string username);
 		Task<LoginResDTO> Login(LoginReqDTO loginReqDTO);
 
-		Task<localUser> Register(RegisterReqDTO registerReqDTO);
+		//Task<ActionResult<customer>> Register(RegisteCustomerDTO customerDTO);
 
 	}
 }

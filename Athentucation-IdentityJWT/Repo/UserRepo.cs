@@ -1,7 +1,9 @@
 ﻿using Athentucation_IdentityJWT.Data;
 using Athentucation_IdentityJWT.Models;
 using Athentucation_IdentityJWT.Models.DTOs;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,10 +16,13 @@ namespace Athentucation_IdentityJWT.Repo
 	{
 		private readonly AppDbContext _db;
 		private readonly string secretKey;
-		public UserRepo(AppDbContext db, IConfiguration configuration)
+		private readonly UserManager<AccountIdentity> _userManager;
+
+		public UserRepo(AppDbContext db, IConfiguration configuration, UserManager<AccountIdentity> userManager)
 		{
 			_db = db;
 			secretKey = configuration.GetValue<string>("ApiSettings:secret");
+			_userManager = userManager;
 		}
 		public bool IsUniqueUser(string username)
 		{
@@ -72,21 +77,56 @@ namespace Athentucation_IdentityJWT.Repo
 
 		}
 
-		public async Task<localUser> Register(RegisterReqDTO registerReqDTO)
-		{
-			localUser user = new localUser()
-			{
-				UserName = registerReqDTO.UserName,
-				Password = registerReqDTO.Password,
-				Role = registerReqDTO.Role,
-				Name = registerReqDTO.Name
 
-			};
-			await _db.LocalUsers.AddAsync(user); //?? he didn't await !!! 
-			await _db.SaveChangesAsync();
-			user.Password = "";
-			return user;
+		//public async Task<ActionResult<customer>> Register(RegisteCustomerDTO customerDTO)
+		//{
+		//	var customer = new AccountIdentity
+		//	{
+		//		fname = customerDTO.fname,
+		//		Email = customerDTO.Email
+		//	};
 
-		}
+		//	var creationResult = await _userManager.CreateAsync(customer, customerDTO.Password);
+
+		//	if (!creationResult.Succeeded)
+		//	{
+		//		return null;
+		//	}
+
+		//	var userClaims = new List<Claim>
+		//	{
+		//		new Claim(ClaimTypes.NameIdentifier, customerDTO.fname),
+		//		new Claim(ClaimTypes.Email, customerDTO.Email),
+		//		new Claim(ClaimTypes.Role, "Customer"),
+		//	};
+		//	await _userManager.AddClaimsAsync(customer, userClaims);
+
+		//	return new customer
+		//	{
+		//		fname = customerDTO.fname,
+		//		Email = customerDTO.Email
+		//	};
+
+		//}
+
+		//public async Task<localUser> Register(RegisterReqDTO registerReqDTO)
+		//{
+		//	localUser user = new localUser()
+		//	{
+		//		UserName = registerReqDTO.UserName,
+		//		Password = registerReqDTO.Password,
+		//		Role = registerReqDTO.Role,
+		//		Name = registerReqDTO.Name
+
+		//	};
+		//	await _db.LocalUsers.AddAsync(user); //?? he didn't await !!! 
+		//	await _db.SaveChangesAsync();
+		//	user.Password = "";
+		//	return user;
+
+
+		//}
+
+
 	}
 }

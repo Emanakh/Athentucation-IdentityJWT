@@ -4,6 +4,7 @@ using Athentucation_IdentityJWT.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Athentucation_IdentityJWT.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240315124045_iden")]
+    partial class iden
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,10 +33,6 @@ namespace Athentucation_IdentityJWT.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<string>("Bio")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
@@ -44,10 +43,6 @@ namespace Athentucation_IdentityJWT.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("Location")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -86,9 +81,6 @@ namespace Athentucation_IdentityJWT.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("careerlevel")
-                        .HasColumnType("int");
-
                     b.Property<int>("city")
                         .HasColumnType("int");
 
@@ -99,29 +91,11 @@ namespace Athentucation_IdentityJWT.Migrations
                     b.Property<int>("gender")
                         .HasColumnType("int");
 
-                    b.Property<int>("job")
-                        .HasColumnType("int");
-
                     b.Property<string>("lname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("loc")
-                        .HasColumnType("int");
-
-                    b.Property<int>("priceD")
-                        .HasColumnType("int");
-
-                    b.Property<int>("priceH")
-                        .HasColumnType("int");
-
                     b.Property<int>("region")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ucando")
-                        .HasColumnType("int");
-
-                    b.Property<int>("yearsofExperience")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

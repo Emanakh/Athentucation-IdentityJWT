@@ -1,6 +1,8 @@
 using Athentucation_IdentityJWT.Data;
+using Athentucation_IdentityJWT.Models;
 using Athentucation_IdentityJWT.Repo;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -15,6 +17,23 @@ builder.Services.AddDbContext<AppDbContext>(option =>
 {
 	option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString"));
 });
+
+builder.Services.AddIdentity<AccountIdentity, IdentityRole>(options =>
+{
+	options.Password.RequireUppercase = false;
+	options.Password.RequireLowercase = false;
+	options.Password.RequireNonAlphanumeric = false;
+	options.Password.RequiredLength = 5;
+
+	options.User.RequireUniqueEmail = true;
+
+	options.Lockout.MaxFailedAccessAttempts = 3;
+	options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
+
+}).AddEntityFrameworkStores<AppDbContext>();
+
+
+
 builder.Services.AddAuthentication(
 	options =>
 	{
