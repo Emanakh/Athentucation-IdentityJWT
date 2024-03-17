@@ -7,9 +7,11 @@ namespace Athentucation_IdentityJWT.Repo
 	public interface IUserRepo
 	{
 		bool IsUniqueUser(string username);
-		Task<LoginResDTO> Login(LoginReqDTO loginReqDTO);
+		public Task<LoginResDTO> Login(LoginReqDTO loginReqDTO);
 
-		//Task<ActionResult<customer>> Register(RegisteCustomerDTO customerDTO);
+
+		public Task<UserDTO> Register(RegisterReqDTO registerReqDTO);
+
 
 	}
 }

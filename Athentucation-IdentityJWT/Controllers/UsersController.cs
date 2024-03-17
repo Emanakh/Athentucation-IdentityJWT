@@ -14,13 +14,11 @@ namespace Athentucation_IdentityJWT.Controllers
 	public class UsersController : ControllerBase
 	{
 		private readonly IUserRepo _userRepo;
-		private readonly UserManager<AccountIdentity> _userManager;
 
 
-		public UsersController(IUserRepo userRepo, UserManager<AccountIdentity> userManager)
+		public UsersController(IUserRepo userRepo)
 		{
 			_userRepo = userRepo;
-			_userManager = userManager;
 
 		}
 
@@ -30,63 +28,33 @@ namespace Athentucation_IdentityJWT.Controllers
 			var LoginRes = await _userRepo.Login(model);
 			if (LoginRes.User == null || string.IsNullOrEmpty(LoginRes.Token))
 			{
-				//return badrequest(model) i don't get why it made a new messsage
+
 				return BadRequest(new { message = "user or pass are in correct" });
-				//هنعمل standard apirespone okay feh status 400, fail, errmsg is the msg elly fo2 okay .. and i will sent it in the bad request 
+
 			}
 
-			//هنعمل standard apirespone okay feh status 200, success, resuk=lt is the login res elly fo2 okay .. and i will sent it in the ok request  
+
 			return Ok(LoginRes);
 		}
 
-		//public async Task<IActionResult> Register([FromBody] RegisteCustomerDTO model)
-		//{
-		//	//bool isUserNameUnique = _userRepo.IsUniqueUser(fn);
-		//	//if (!isUserNameUnique)
-		//	//{
-		//	//	//هنعمل standard apirespone okay feh status 400, fail, errmsg is the msg in the bad request 
-		//	//	return BadRequest();
-		//	//}
-		//	var user = await _userRepo.Register(model);
-		//	if (user == null)
-		//	{
-		//		return BadRequest(); //standard response 
-		//	}
-		//	return Ok();
-		//}
+
 
 		[HttpPost("Register")]
-
-		public async Task<IActionResult> Register(RegisteCustomerDTO customerDTO)
+		public async Task<IActionResult> Register([FromBody] RegisterReqDTO model)
 		{
-			var customer = new AccountIdentity
+			bool isUserNameUnique = _userRepo.IsUniqueUser(model.UserName);
+			if (!isUserNameUnique)
 			{
-				fname = customerDTO.fname,
-				Email = customerDTO.Email
-
-			};
-
-			//var creationResult = await _userManager.CreateAsync(customer, customerDTO.Password);
-
-			//if (!creationResult.Succeeded)
-			//{
-			//	return BadRequest();
-			//}
-
-			//var userClaims = new List<Claim>
-			//{
-			//	new Claim(ClaimTypes.NameIdentifier, customerDTO.fname),
-			//	new Claim(ClaimTypes.Email, customerDTO.Email),
-			//	new Claim(ClaimTypes.Role, "Customer"),
-			//};
-			var d = await _userManager.RegisterUserAsync(customerDTO);
-
-			return Ok("ok");
-
-
-
-
+				return BadRequest();
+			}
+			var user = await _userRepo.Register(model);
+			if (user == null)
+			{
+				return BadRequest();
+			}
+			return Ok();
 		}
+
 
 	}
 }

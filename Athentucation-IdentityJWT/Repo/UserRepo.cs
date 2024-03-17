@@ -35,47 +35,47 @@ namespace Athentucation_IdentityJWT.Repo
 		}
 
 		//generate token
-		public async Task<LoginResDTO> Login(LoginReqDTO loginReqDTO)
-		{
-			var user = _db.LocalUsers.FirstOrDefault(u => u.UserName.ToLower() == loginReqDTO.UserName.ToLower() && u.Password == loginReqDTO.Password);
-			if (user == null)
-			{
-				//return null;
-				return new LoginResDTO()
-				{
-					Token = "",
-					User = null
+		//public async Task<LoginResDTO> Login(LoginReqDTO loginReqDTO)
+		//{
+		//	var user = _db.LocalUsers.FirstOrDefault(u => u.UserName.ToLower() == loginReqDTO.UserName.ToLower() && u.Password == loginReqDTO.Password);
+		//	if (user == null)
+		//	{
+		//		//return null;
+		//		return new LoginResDTO()
+		//		{
+		//			Token = "",
+		//			User = null
 
-				};
-			}
-			//if found generate token... 
+		//		};
+		//	}
+		//	//if found generate token... 
 
-			//key 
-			var secretKeyInBytes = Encoding.ASCII.GetBytes(secretKey);
-			var key = new SymmetricSecurityKey(secretKeyInBytes);
+		//	//key 
+		//	var secretKeyInBytes = Encoding.ASCII.GetBytes(secretKey);
+		//	var key = new SymmetricSecurityKey(secretKeyInBytes);
 
-			var tokenDescriptor = new SecurityTokenDescriptor
-			{
-				Subject = new ClaimsIdentity(new Claim[]
-			{
-				new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()),
-				new Claim(ClaimTypes.Role, user.Role),
-			}),
-				Expires = DateTime.UtcNow.AddDays(7),
-				SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)
-			};
+		//	var tokenDescriptor = new SecurityTokenDescriptor
+		//	{
+		//		Subject = new ClaimsIdentity(new Claim[]
+		//	{
+		//		new Claim(ClaimTypes.NameIdentifier, user.ID.ToString()),
+		//		new Claim(ClaimTypes.Role, user.Role),
+		//	}),
+		//		Expires = DateTime.UtcNow.AddDays(7),
+		//		SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)
+		//	};
 
-			var TokenHandler = new JwtSecurityTokenHandler();
-			var token = TokenHandler.CreateToken(tokenDescriptor);
-			var StringToken = TokenHandler.WriteToken(token);
-			LoginResDTO loginResDTO = new LoginResDTO()
-			{
-				Token = StringToken,
-				User = user
-			};
-			return loginResDTO;
+		//	var TokenHandler = new JwtSecurityTokenHandler();
+		//	var token = TokenHandler.CreateToken(tokenDescriptor);
+		//	var StringToken = TokenHandler.WriteToken(token);
+		//	LoginResDTO loginResDTO = new LoginResDTO()
+		//	{
+		//		Token = StringToken,
+		//		User = user
+		//	};
+		//	return loginResDTO;
 
-		}
+		//}
 
 
 		//public async Task<ActionResult<customer>> Register(RegisteCustomerDTO customerDTO)
@@ -127,6 +127,102 @@ namespace Athentucation_IdentityJWT.Repo
 
 		//}
 
+
+		public async Task<LoginResDTO> Login(LoginReqDTO loginReqDTO)
+		{
+			var user = _db.Users.FirstOrDefault(u => u.UserName.ToLower() == loginReqDTO.UserName.ToLower());
+			bool isValid = await _userManager.CheckPasswordAsync(user, loginReqDTO.Password);
+
+
+
+			if (user == null || isValid == false)
+			{
+				//return null;
+				return new LoginResDTO()
+				{
+					Token = "",
+					User = null
+
+				};
+			}
+
+			//if found
+			var roles = await _userManager.GetRolesAsync(user);
+			var Role = roles.FirstOrDefault();
+
+			//if found generate token... 
+
+			//key 
+			var secretKeyInBytes = Encoding.ASCII.GetBytes(secretKey);
+			var key = new SymmetricSecurityKey(secretKeyInBytes);
+
+			var tokenDescriptor = new SecurityTokenDescriptor
+			{
+				Subject = new ClaimsIdentity(new Claim[]
+			{
+				new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+				new Claim(ClaimTypes.Role, Role),
+			}),
+				Expires = DateTime.UtcNow.AddDays(7),
+				SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)
+			};
+
+			var TokenHandler = new JwtSecurityTokenHandler();
+			var token = TokenHandler.CreateToken(tokenDescriptor);
+			var StringToken = TokenHandler.WriteToken(token);
+			LoginResDTO loginResDTO = new LoginResDTO()
+			{
+				Token = StringToken,
+				Role = Role,
+				User = new UserDTO
+				{
+
+					ID = user.Id,
+					Name = user.fname,
+					UserName = user.UserName
+
+				}
+			};
+			return loginResDTO;
+
+		}
+
+		public async Task<UserDTO> Register(RegisterReqDTO registerReqDTO)
+		{
+			AccountIdentity user = new AccountIdentity()
+			{
+
+				UserName = registerReqDTO.UserName,
+				///emails
+				fname = registerReqDTO.Name
+			};
+			try
+			{
+				var result = await _userManager.CreateAsync(user, registerReqDTO.Password);
+				if (result.Succeeded)
+				{
+					await _userManager.AddToRoleAsync(user, "admin");
+					var newUser = _db.Users.FirstOrDefault(u => u.UserName == registerReqDTO.UserName);
+					return new UserDTO()
+					{
+						ID = newUser.Id,
+						UserName = newUser.UserName,
+						Name = newUser.fname
+					};
+
+				}
+			}
+			catch (Exception e)
+			{
+
+			}
+
+			return new UserDTO();
+
+
+
+
+		}
 
 	}
 }
